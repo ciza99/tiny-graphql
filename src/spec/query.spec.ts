@@ -37,7 +37,7 @@ beforeAll(async () => {
   );
 });
 
-test("1 + 1 = 2", async () => {
+test("query returns correct data", async () => {
   const client = new Client();
   const query = `
     query {
