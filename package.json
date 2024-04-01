@@ -1,0 +1,26 @@
+{
+  "name": "tiny-graphql",
+  "version": "0.0.1",
+  "description": "Tiny flexible graphql client",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "lint": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "graphql",
+    "client",
+    "fetch",
+    "request"
+  ],
+  "author": "ciza99",
+  "license": "MIT",
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.3"
+  }
+}
