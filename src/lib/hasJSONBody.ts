@@ -1,4 +1,4 @@
-export const hasJSONBody = (response: {
+export const isContentTypeJSON = (response: {
   headers: Response["headers"];
 }): boolean => {
   const contentType = response.headers.get("Content-Type");

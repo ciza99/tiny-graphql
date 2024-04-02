@@ -78,7 +78,7 @@ export class Client {
       )) ?? initialResponse;
 
     if (!response.ok) {
-      if (!hasJSONBody(response)) {
+      if (!isContentTypeJSON(response)) {
         throw new GraphQLError({
           response,
           errors: [{ message: response.statusText }],
