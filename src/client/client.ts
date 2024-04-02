@@ -1,7 +1,7 @@
 import { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import { mergeClientOptions } from "@/lib/merge";
 import { GraphQLError } from "@/lib/error";
-import { hasJSONBody } from "@/lib/hasJSONBody";
+import { isContentTypeJSON } from "@/lib/isContentTypeJSON";
 
 type FetchType = typeof globalThis.fetch;
 
