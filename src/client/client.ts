@@ -1,5 +1,7 @@
 import { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import { mergeClientOptions } from "@/lib/merge";
+import { GraphQLError } from "@/lib/error";
+import { hasJSONBody } from "@/lib/hasJSONBody";
 
 type FetchType = typeof globalThis.fetch;
 
@@ -75,8 +77,35 @@ export class Client {
         Promise.resolve(initialResponse)
       )) ?? initialResponse;
 
-    // TODO: handle errors
+    if (!response.ok) {
+      if (!hasJSONBody(response)) {
+        throw new GraphQLError({
+          response,
+          errors: [{ message: response.statusText }],
+          operation,
+          variables,
+        });
+      }
+
+      const { errors } = await response.json();
+      throw new GraphQLError({
+        response,
+        errors,
+        operation,
+        variables,
+      });
+    }
+
     const { data, errors } = await response.json();
+
+    if (errors) {
+      throw new GraphQLError({
+        response,
+        errors,
+        operation,
+        variables,
+      });
+    }
 
     return { data, response };
   }
