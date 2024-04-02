@@ -1,18 +1,34 @@
 import { beforeAll, test, expect } from "vitest";
 import { createServer } from "http";
 import { createSchema, createYoga } from "graphql-yoga";
-import { Client } from "client/client";
+import { Client } from "@/client/client";
+
+type User = {
+  id: number;
+  name: string;
+};
+
+const mockUser = (id: number): User => ({
+  id,
+  name: "John Doe",
+});
 
 const yoga = createYoga({
   schema: createSchema({
     typeDefs: `
       type Query {
         hello: String!
+        user(id: Int!): User
+      }
+      type User {
+        id: Int!
+        name: String!
       }
     `,
     resolvers: {
       Query: {
         hello: () => "Hello World",
+        user: (_, { id }) => mockUser(id),
       },
     },
   }),
@@ -38,19 +54,37 @@ beforeAll(async () => {
 });
 
 test("query returns correct data", async () => {
-  const client = new Client();
   const query = `
     query {
       hello
     }
   `;
 
-  const res = await client.request(query);
-  const data = await res.json();
+  const client = new Client(`http://localhost:${port}/graphql`);
+  const { data, response } = await client.request(query);
 
-  expect(data).toMatchObject({
-    data: {
-      hello: "Hello World",
-    },
-  });
+  expect(response.status).toBe(200);
+  expect(data).toEqual({ data: { hello: "Hello World" } });
+});
+
+test("query returns correct data with variables", async () => {
+  const query = `
+    query GetUser($id: Int!){
+      user(id: $id) {
+        id
+        name
+      }
+    }
+  `;
+
+  const id = 7;
+
+  const client = new Client(`http://localhost:${port}/graphql`);
+  const { data, response } = await client.request<
+    { user: User },
+    { id: number }
+  >(query, { id });
+
+  expect(response.status).toBe(200);
+  expect(data).toEqual({ data: { user: mockUser(id) } });
 });
