@@ -7,16 +7,17 @@ export type Options = Omit<RequestInit, "body" | "method"> & {
   fetch?: FetchType;
 };
 
-type BeforeRequestHook = (req: Request, options?: Options) => Request;
+type BeforeRequestHook = (req: Request, options?: Options) => Promise<Request>;
 type AfterResponseHook = (
   req: Request,
   res: Response,
   options?: Options
-) => Response;
+) => Promise<Response>;
 
 export type ClientOptions = Options & {
   hooks?: {
     beforeRequest?: BeforeRequestHook[];
+    // TODO: implement before retry hook
     afterResponse?: AfterResponseHook[];
   };
 };
@@ -47,8 +48,7 @@ export class Client {
       this.options,
       options
     );
-
-    const response = await fetch(this.url, {
+    const initialRequest: Request = new Request(this.url, {
       method: "POST",
       body: JSON.stringify({
         query: operation,
@@ -57,7 +57,26 @@ export class Client {
       ...fetchOptions,
     });
 
-    const data = await response.json();
+    const request =
+      (await hooks?.beforeRequest?.reduce<Promise<Request>>(
+        async (request, beforeRequestHook) => {
+          return await beforeRequestHook(await request, this.options);
+        },
+        Promise.resolve(initialRequest)
+      )) ?? initialRequest;
+
+    const initialResponse = await fetch(request);
+
+    const response =
+      (await hooks?.afterResponse?.reduce<Promise<Response>>(
+        async (response, afterResponseHook) => {
+          return await afterResponseHook(request, await response, this.options);
+        },
+        Promise.resolve(initialResponse)
+      )) ?? initialResponse;
+
+    // TODO: handle errors
+    const { data, errors } = await response.json();
 
     return { data, response };
   }

@@ -64,7 +64,7 @@ test("query returns correct data", async () => {
   const { data, response } = await client.request(query);
 
   expect(response.status).toBe(200);
-  expect(data).toEqual({ data: { hello: "Hello World" } });
+  expect(data).toEqual({ hello: "Hello World" });
 });
 
 test("query returns correct data with variables", async () => {
@@ -86,5 +86,5 @@ test("query returns correct data with variables", async () => {
   >(query, { id });
 
   expect(response.status).toBe(200);
-  expect(data).toEqual({ data: { user: mockUser(id) } });
+  expect(data).toEqual({ user: mockUser(id) });
 });
