@@ -1,5 +1,11 @@
 # tiny-graphql
 
+## 0.0.3
+
+### Patch Changes
+
+- a5bc1e0: fixed npm token
+
 ## 0.0.2
 
 ### Patch Changes
