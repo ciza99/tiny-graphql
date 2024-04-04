@@ -32,6 +32,22 @@ export class Client {
     this.url = url;
   }
 
+  public extend(options?: ClientOptions): Client;
+  public extend(url: RequestInfo | URL, options?: ClientOptions): Client;
+  public extend(
+    urlOrOptions?: RequestInfo | URL | ClientOptions,
+    options?: ClientOptions
+  ): Client {
+    if (typeof urlOrOptions === "string" || urlOrOptions instanceof URL) {
+      return new Client(
+        urlOrOptions,
+        mergeClientOptions(this.options, options)
+      );
+    }
+
+    return new Client(this.url, mergeClientOptions(this.options, urlOrOptions));
+  }
+
   public async request<TData = unknown, TVariables = Record<string, unknown>>(
     operation: TypedDocumentNode<TData, TVariables> | string,
     variables?: TVariables,
