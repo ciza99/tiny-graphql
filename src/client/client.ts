@@ -9,11 +9,14 @@ export type Options = Omit<RequestInit, "body" | "method"> & {
   fetch?: FetchType;
 };
 
-type BeforeRequestHook = (req: Request, options?: Options) => Promise<Request>;
+type BeforeRequestHook = (
+  req: Request,
+  options?: ClientOptions
+) => Promise<Request>;
 type AfterResponseHook = (
   req: Request,
   res: Response,
-  options?: Options
+  options?: ClientOptions
 ) => Promise<Response>;
 
 export type ClientOptions = Options & {
