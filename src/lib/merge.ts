@@ -1,4 +1,4 @@
-import type { ClientOptions } from "@/client/client";
+import type { RequestOptions } from "./request";
 
 export const mergeHeaders = (...headersArray: HeadersInit[]) => {
   return headersArray.reduce<Headers>((acc, headers) => {
@@ -12,10 +12,10 @@ export const mergeHeaders = (...headersArray: HeadersInit[]) => {
 };
 
 const mergeHooks = (
-  ...hooksArray: ClientOptions["hooks"][]
-): ClientOptions["hooks"] => {
+  ...hooksArray: RequestOptions["hooks"][]
+): RequestOptions["hooks"] => {
   return (
-    hooksArray?.reduce<Exclude<Required<ClientOptions["hooks"]>, undefined>>(
+    hooksArray?.reduce<Exclude<Required<RequestOptions["hooks"]>, undefined>>(
       (acc, hooks) => {
         const beforeRequest = [
           ...acc.beforeRequest,
@@ -32,10 +32,8 @@ const mergeHooks = (
   );
 };
 
-export const mergeClientOptions = (
-  ...options: (ClientOptions | undefined)[]
-) => {
-  return options.reduce<ClientOptions>((acc, opts) => {
+export const mergeOptions = (...options: (RequestOptions | undefined)[]) => {
+  return options.reduce<RequestOptions>((acc, opts) => {
     const headers = mergeHeaders(acc.headers ?? {}, opts?.headers ?? {});
     const hooks = mergeHooks(acc.hooks, opts?.hooks);
     return { ...acc, ...opts, hooks, headers };

@@ -1,7 +1,7 @@
 import { beforeAll, test, expect } from "vitest";
 import { createServer } from "http";
 import { createSchema, createYoga } from "graphql-yoga";
-import { Client } from "@/client/client";
+import { Client } from "@/lib/client";
 
 const yoga = createYoga({
   schema: createSchema({
@@ -47,5 +47,7 @@ test("client handles errors correctly", async () => {
   `;
 
   const client = new Client(`http://localhost:${port}/graphql`);
-  await expect(() => client.request(query)).rejects.toThrowError();
+  await expect(() =>
+    client.request({ operation: query })
+  ).rejects.toThrowError();
 });

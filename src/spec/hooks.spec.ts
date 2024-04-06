@@ -1,7 +1,7 @@
 import { beforeAll, test, expect } from "vitest";
 import { createServer } from "http";
 import { createSchema, createYoga, YogaInitialContext } from "graphql-yoga";
-import { Client } from "@/client/client";
+import { Client } from "@/lib/client";
 
 const yoga = createYoga<YogaInitialContext>({
   schema: createSchema({
@@ -63,7 +63,7 @@ test("before request hook modifies request", async () => {
     },
   });
 
-  const { data, response } = await client.request(query);
+  const { data, response } = await client.request({ operation: query });
 
   expect(response.status).toBe(200);
   expect(data).toEqual({ authorized: "Secret" });
@@ -93,7 +93,7 @@ test("after response hook modifies response", async () => {
     },
   });
 
-  const { data, response } = await client.request(query);
+  const { data, response } = await client.request({ operation: query });
 
   expect(response.status).toBe(200);
   expect(response.headers.get("patched")).toBe("true");
