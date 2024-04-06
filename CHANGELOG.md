@@ -1,5 +1,11 @@
 # tiny-graphql
 
+## 0.0.4
+
+### Patch Changes
+
+- 110bd33: Added core request API
+
 ## 0.0.3
 
 ### Patch Changes
