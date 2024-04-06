@@ -8,6 +8,10 @@
   "publishConfig": {
     "access": "public"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ciza99/tiny-graphql.git"
+  },
   "scripts": {
     "build": "tsup",
     "lint": "tsc",
