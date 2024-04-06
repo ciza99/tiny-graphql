@@ -21,8 +21,17 @@
   "keywords": [
     "graphql",
     "client",
+    "gql",
     "fetch",
-    "request"
+    "request",
+    "query",
+    "mutation",
+    "api",
+    "network",
+    "http",
+    "https",
+    "browser",
+    "node"
   ],
   "author": "ciza99",
   "license": "MIT",
