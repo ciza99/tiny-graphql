@@ -1,5 +1,11 @@
 # tiny-graphql
 
+## 0.0.7
+
+### Patch Changes
+
+- 610e93e: added deep merge to prevent overwriting next option
+
 ## 0.0.6
 
 ### Patch Changes
