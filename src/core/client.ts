@@ -1,19 +1,17 @@
 import { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import { mergeOptions } from "./lib/merge";
 import { RequestOptions } from "./request";
-import { chain, httpLink, Link } from "@/link";
+import { chain, Link } from "@/link";
 
 type ClientOptions = RequestOptions & {
-  links?: Link[];
+  links: Link[];
 };
 
 export class Client {
   private readonly options?: ClientOptions;
-  private readonly url: URL | string;
 
-  constructor(url: URL | string, options?: ClientOptions) {
+  constructor(options?: ClientOptions) {
     this.options = options;
-    this.url = url;
   }
 
   public request<TData = unknown, TVariables = Record<string, unknown>>({
@@ -25,15 +23,7 @@ export class Client {
     variables?: TVariables;
     options?: RequestOptions;
   }): Promise<{ data: TData; response: Response }> {
-    const {
-      links = [
-        httpLink({
-          url: this.url,
-          fetch: options?.fetch ?? globalThis.fetch,
-        }),
-      ],
-      ...requestOptions
-    } = this.options ?? {};
+    const { links = [], ...requestOptions } = this.options ?? {};
 
     const mergedOptions = mergeOptions(requestOptions, options);
 

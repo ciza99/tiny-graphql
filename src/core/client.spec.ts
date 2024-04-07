@@ -2,6 +2,7 @@ import { beforeAll, test, expect } from "vitest";
 import { createServer } from "http";
 import { createSchema, createYoga } from "graphql-yoga";
 import { Client } from "./client";
+import { httpLink } from "..";
 
 type User = {
   id: number;
@@ -60,7 +61,9 @@ test("query returns correct data", async () => {
     }
   `;
 
-  const client = new Client(`http://localhost:${port}/graphql`);
+  const client = new Client({
+    links: [httpLink({ url: `http://localhost:${port}/graphql` })],
+  });
   const { data, response } = await client.request({ operation: query });
 
   expect(response.status).toBe(200);
@@ -79,7 +82,9 @@ test("query returns correct data with variables", async () => {
 
   const id = 7;
 
-  const client = new Client(`http://localhost:${port}/graphql`);
+  const client = new Client({
+    links: [httpLink({ url: `http://localhost:${port}/graphql` })],
+  });
   const { data, response } = await client.request<
     { user: User },
     { id: number }

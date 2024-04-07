@@ -55,7 +55,7 @@ describe("links", () => {
     }
   `;
 
-    const client = new Client(`http://localhost:${port}/graphql`, {
+    const client = new Client({
       links: [
         loggerLink(),
         (options, next) => {
@@ -84,7 +84,7 @@ describe("links", () => {
     }
   `;
 
-    const client = new Client(`http://localhost:${port}/graphql`, {
+    const client = new Client({
       links: [
         (options, next) => {
           return observableFactory((observer) => {
