@@ -4,7 +4,7 @@ import { createRequest } from "./createRequest";
 import { isContentTypeJSON } from "./lib/isContentTypeJSON";
 import { GraphQLError } from "./lib/error";
 
-type FetchType = typeof globalThis.fetch;
+export type FetchType = typeof globalThis.fetch;
 
 export type Options = Omit<RequestInit, "body" | "method"> & {
   fetch?: FetchType;
@@ -35,14 +35,14 @@ export const request = async <
     options
   );
 
-  const initialRequest = createRequest({
+  const args = createRequest({
     url,
     operation,
     variables,
     options: fetchOptions,
   });
 
-  const response = await fetch(initialRequest);
+  const response = await fetch(...args);
 
   if (!response.ok) {
     if (!isContentTypeJSON(response)) {
