@@ -119,11 +119,8 @@ const authLink: Link = (options, next) => {
 };
 
 const client = new Client({
-  links: [
-    loggerLink(),
-    authLink,
-    httpLink({ url: `http://localhost:${port}/graphql` }),
-  ],
+  // provide the `authLink` to the client before the terminating `httpLink`
+  links: [authLink, httpLink({ url: `http://localhost:${port}/graphql` })],
 });
 ```
 
