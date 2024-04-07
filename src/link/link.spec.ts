@@ -3,7 +3,7 @@ import { createServer } from "http";
 import { createSchema, createYoga, YogaInitialContext } from "graphql-yoga";
 import { Client } from "@/core/";
 import { observableFactory } from "@/observer";
-import { httpLink, loggerLink } from "@/link";
+import { Link, httpLink, loggerLink } from "@/link";
 
 const yoga = createYoga<YogaInitialContext>({
   schema: createSchema({
@@ -55,18 +55,20 @@ describe("links", () => {
     }
   `;
 
+    const authLink: Link = (options, next) => {
+      return observableFactory((observer) => {
+        const { headers: currentHeaders, ...rest } = options;
+
+        const headers = new Headers(currentHeaders);
+        headers.set("Authorization", "Bearer <token>");
+        return next({ headers, ...rest }).subscribe(observer);
+      });
+    };
+
     const client = new Client({
       links: [
         loggerLink(),
-        (options, next) => {
-          return observableFactory((observer) => {
-            const { headers: currentHeaders, ...rest } = options;
-
-            const headers = new Headers(currentHeaders);
-            headers.set("Authorization", "Bearer <token>");
-            return next({ headers, ...rest }).subscribe(observer);
-          });
-        },
+        authLink,
         httpLink({ url: `http://localhost:${port}/graphql` }),
       ],
     });
