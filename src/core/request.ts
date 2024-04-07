@@ -1,8 +1,8 @@
 import { TypedDocumentNode } from "@graphql-typed-document-node/core";
-import { mergeOptions } from "./merge";
+import { mergeOptions } from "./lib/merge";
 import { createRequest } from "./createRequest";
-import { isContentTypeJSON } from "./isContentTypeJSON";
-import { GraphQLError } from "./error";
+import { isContentTypeJSON } from "./lib/isContentTypeJSON";
+import { GraphQLError } from "./lib/error";
 
 type FetchType = typeof globalThis.fetch;
 
@@ -10,24 +10,7 @@ export type Options = Omit<RequestInit, "body" | "method"> & {
   fetch?: FetchType;
 };
 
-export type RequestOptions = Options & {
-  hooks?: {
-    beforeRequest?: BeforeRequestHook[];
-    // TODO: implement before retry hook
-    afterResponse?: AfterResponseHook[];
-  };
-};
-
-export type BeforeRequestHook = (
-  req: Request,
-  options?: Options
-) => Promise<Request>;
-
-export type AfterResponseHook = (
-  req: Request,
-  res: Response,
-  options?: RequestOptions
-) => Promise<Response>;
+export type RequestOptions = Options;
 
 export const request = async <
   TData = unknown,
@@ -43,11 +26,7 @@ export const request = async <
   variables?: TVariables;
   options?: RequestOptions;
 }): Promise<{ data: TData; response: Response }> => {
-  const {
-    hooks,
-    fetch = globalThis.fetch,
-    ...fetchOptions
-  } = mergeOptions(
+  const { fetch = globalThis.fetch, ...fetchOptions } = mergeOptions(
     {
       headers: {
         "Content-Type": "application/json",
@@ -63,23 +42,7 @@ export const request = async <
     options: fetchOptions,
   });
 
-  const request =
-    (await hooks?.beforeRequest?.reduce<Promise<Request>>(
-      async (request, beforeRequestHook) => {
-        return await beforeRequestHook(await request, options);
-      },
-      Promise.resolve(initialRequest)
-    )) ?? initialRequest;
-
-  const initialResponse = await fetch(request);
-
-  const response =
-    (await hooks?.afterResponse?.reduce<Promise<Response>>(
-      async (response, afterResponseHook) => {
-        return await afterResponseHook(request, await response, options);
-      },
-      Promise.resolve(initialResponse)
-    )) ?? initialResponse;
+  const response = await fetch(initialRequest);
 
   if (!response.ok) {
     if (!isContentTypeJSON(response)) {

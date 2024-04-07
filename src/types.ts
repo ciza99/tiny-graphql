@@ -1,6 +1,3 @@
-export {
-  Options,
-  RequestOptions,
-  BeforeRequestHook,
-  AfterResponseHook,
-} from "./lib/request";
+export { Options, RequestOptions } from "./core";
+export { Observable, Observer } from "./observer";
+export { Link, HTTPLink, LoggerLink } from "./link";

@@ -1,7 +1,7 @@
 import { beforeAll, test, expect } from "vitest";
 import { createServer } from "http";
 import { createSchema, createYoga } from "graphql-yoga";
-import { Client } from "@/lib/client";
+import { Client } from "@/core/client";
 
 const yoga = createYoga({
   schema: createSchema({

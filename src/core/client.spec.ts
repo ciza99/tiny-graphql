@@ -1,7 +1,7 @@
 import { beforeAll, test, expect } from "vitest";
 import { createServer } from "http";
 import { createSchema, createYoga } from "graphql-yoga";
-import { Client } from "@/lib/client";
+import { Client } from "./client";
 
 type User = {
   id: number;
@@ -83,7 +83,10 @@ test("query returns correct data with variables", async () => {
   const { data, response } = await client.request<
     { user: User },
     { id: number }
-  >({ operation: query, variables: { id } });
+  >({
+    operation: query,
+    variables: { id },
+  });
 
   expect(response.status).toBe(200);
   expect(data).toEqual({ user: mockUser(id) });

@@ -1,3 +1,3 @@
-export { Client } from "./lib/client";
-export { request } from "./lib/request";
-export { createRequest } from "./lib/createRequest";
+export { Client, request, createRequest, GraphQLError } from "./core";
+export { httpLink, loggerLink } from "./link";
+export { observableFactory, observerFactory } from "./observer";
