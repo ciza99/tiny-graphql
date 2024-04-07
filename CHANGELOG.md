@@ -1,5 +1,12 @@
 # tiny-graphql
 
+## 0.0.6
+
+### Patch Changes
+
+- f5d50fd: improved documentation
+- d690147: support for `next` fetch polyfill
+
 ## 0.0.5
 
 ### Patch Changes
