@@ -1,5 +1,13 @@
 # tiny-graphql
 
+## 0.0.5
+
+### Patch Changes
+
+- ff51b14: Added links, observables and operators
+- e82ebbb: added basic docs
+- b845439: removed url from the client options
+
 ## 0.0.4
 
 ### Patch Changes
