@@ -98,12 +98,12 @@ const { data, response } = client.request({
 
 ## Links
 
-Tiny graphql client uses a concept called `links` to handle the request and response. A `link` is a function that takes a `request` and returns a `response`. You can create your own `link` to handle the request and response lifecycle.
+Tiny graphql client uses a concept called `links` to handle the request and response. A `link` is a function that takes the current request options and a `next` function that forwards the request to the next `link` in the chain.
 
 Creating a custom `link` that adds a `bearer` token to the request:
 
 ```typescript
-import { Client, Link } from "tiny-graphql";
+import { Client, Link, observableFactory } from "tiny-graphql";
 
 const authLink: Link = (options, next) => {
   return observableFactory((observer) => {
@@ -129,4 +129,23 @@ const client = new Client({
 
 ## Usage with next `fetch` polyfill
 
-TODO
+You can use the `next` prop to change the revalidation time
+
+```typescript
+import { Client, httpLink } from "tiny-graphql";
+
+// you can provide the options to the whole client
+const client = new Client({
+  links: [httpLink({ fetch, url: `https://rickandmortyapi.com/graphql` })],
+  // provide `nexts` prop to the client
+  next: {
+    revalidate: 3,
+  },
+});
+
+// or you can provide the options to the request, it will override the client options
+const { data } = await client.request({
+  operation: `<your query>`,
+  options: { next: { revalidate: 5 } },
+});
+```
