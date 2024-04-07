@@ -1,4 +1,4 @@
-import type { RequestOptions } from "./request";
+import type { RequestOptions } from "../request";
 
 export const mergeHeaders = (...headersArray: HeadersInit[]) => {
   return headersArray.reduce<Headers>((acc, headers) => {
